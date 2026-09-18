@@ -14,7 +14,7 @@ Order of work: job/runner contract → bootstrap and helper tools → shared run
 - [x] Add a basic `.gitignore` for credentials, runtime state, dependencies, and user work.
 - [x] Initialize a local Git repository.
 - [x] Create the initial local commit and configure the GitHub remote.
-- [ ] Push `main` to GitHub after resolving SSH account access.
+- [x] Push `main` to `recoder/AI` using GitHub CLI authentication over HTTPS.
 - [ ] Define YAML manifests for workspace paths, prerequisites, tools, models, repositories, and profiles.
 - [x] Implement shared workspace configuration and helper-package state detection.
 - [ ] Extend manifests and state detection to applications, models, repositories, and profiles.
