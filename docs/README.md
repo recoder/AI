@@ -2,6 +2,8 @@
 
 Keep detailed operator documentation in this directory. The root `README.md` is the entry point, `ROADMAP.md` tracks progress, and `AGENTS.md` contains agent instructions.
 
+- [Song-generation jobs and runners](song-generation-jobs.md): proposed shared format, per-tool flavors, YAML configuration lookup, and execution behavior. Implementation is pending.
+
 As implementation progresses, add guides for:
 
 - Initial setup and reconstruction after reinstalling Windows.

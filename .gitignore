@@ -5,6 +5,10 @@
 !.env.*.example
 /config/local.yaml
 /config/local.yml
+/bin/*.yaml
+/bin/*.yml
+!/bin/*.example.yaml
+!/bin/*.example.yml
 
 # Installed applications, shared models, and runtime state
 /apps/
