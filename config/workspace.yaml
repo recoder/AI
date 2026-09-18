@@ -1,0 +1,15 @@
+version: 1
+workspace:
+  # Relative to the repository. Override with AI_WORKSPACE_ROOT on another drive.
+  root: ..
+  directories:
+    bin: bin
+    apps: apps
+    models: models
+    music_models: models/music
+    cache: cache
+    huggingface_cache: cache/huggingface
+    uv_cache: cache/uv
+    logs: logs
+    work: work
+    music_work: work/music

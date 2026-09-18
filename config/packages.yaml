@@ -1,0 +1,45 @@
+version: 1
+# null means accept an existing usable version; bootstrap never upgrades it.
+packages:
+  - name: git
+    id: Git.Git
+    command: git
+    arguments: [--version]
+    scope: machine
+    version: null
+  - name: git-lfs
+    id: GitHub.GitLFS
+    command: git
+    arguments: [lfs, version]
+    scope: machine
+    version: null
+  - name: powershell
+    id: Microsoft.PowerShell
+    command: pwsh
+    arguments: [--version]
+    scope: machine
+    version: null
+  - name: just
+    id: Casey.Just
+    command: just
+    arguments: [--version]
+    scope: user
+    version: null
+  - name: uv
+    id: astral-sh.uv
+    command: uv
+    arguments: [--version]
+    scope: user
+    version: null
+  - name: ffmpeg
+    id: Gyan.FFmpeg
+    command: ffmpeg
+    arguments: [-version]
+    scope: user
+    version: null
+  - name: 7zip
+    id: 7zip.7zip
+    command: 7z
+    arguments: [i]
+    scope: machine
+    version: null

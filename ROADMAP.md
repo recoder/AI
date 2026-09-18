@@ -16,7 +16,8 @@ Order of work: job/runner contract → bootstrap and helper tools → shared run
 - [x] Create the initial local commit and configure the GitHub remote.
 - [ ] Push `main` to GitHub after resolving SSH account access.
 - [ ] Define YAML manifests for workspace paths, prerequisites, tools, models, repositories, and profiles.
-- [ ] Implement shared configuration and state-detection helpers.
+- [x] Implement shared workspace configuration and helper-package state detection.
+- [ ] Extend manifests and state detection to applications, models, repositories, and profiles.
 - [ ] Implement Stage 0 bootstrap and thin `just` recipes for Stage 1 reconciliation.
 - [ ] Implement resumable model downloads and safe repository reconciliation.
 - [ ] Add `just status`, `just doctor`, persistent logs, and an actionable bootstrap summary.
@@ -25,12 +26,15 @@ Order of work: job/runner contract → bootstrap and helper tools → shared run
 
 ## Bootstrap and helper tools
 
-- [ ] Define configurable workspace paths, including `bin/`, application environments, shared models/caches, and user work.
-- [ ] Declare the Stage 0 dependency set: Git, Git LFS, PowerShell 7, `just`, and `uv`.
-- [ ] Declare additional helper packages such as ffmpeg and 7-Zip; add build tools only when required by a selected tool.
+- [x] Define configurable workspace paths, including `bin/`, application environments, shared models/caches, and user work.
+- [x] Declare the initial dependency set: Git, Git LFS, PowerShell 7, `just`, and `uv`.
+- [x] Declare ffmpeg and 7-Zip; add build tools only when required by a selected tool.
 - [ ] Implement unattended prerequisite detection and installation with targeted elevation and restart handling.
-- [ ] Implement directory/environment reconciliation and verify already-installed helpers on reruns.
-- [ ] Add helper-tool status/doctor checks and document recovery commands.
+- [x] Implement directory reconciliation, package probes/install logic, and thin `just` commands.
+- [ ] Configure shared cache environment variables and the Python runner environment.
+- [x] Add helper-tool status/doctor checks and document recovery commands.
+- [ ] Expand Stage 0 to acquire PowerShell/App Installer and clone the repository when absent.
+- [ ] Verify missing-package installations in a clean Windows environment; current-machine checks exercise skip/rerun behavior.
 
 ## Shared music job format and runners
 
