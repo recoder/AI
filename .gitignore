@@ -1,0 +1,30 @@
+# Local credentials and machine-specific configuration
+.env
+.env.*
+!.env.example
+!.env.*.example
+/config/local.yaml
+/config/local.yml
+
+# Installed applications, shared models, and runtime state
+/apps/
+/models/
+/cache/
+/logs/
+/downloads/
+/tmp/
+
+# User repositories and generated content are managed separately
+/work/
+
+# Local dependency environments and build artifacts
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+node_modules/
+
+# OS-generated files
+Thumbs.db
+Desktop.ini
+.DS_Store
