@@ -1,0 +1,25 @@
+version: 1
+models:
+  yue:
+    source: huggingface
+    download_transport: http
+    chunk_bytes: 67108864
+    repo: DeepBeepMeep/TTS
+    revision: 5020589aa562cea206a25eea208d7cbb1f6efae7
+    path: models/music/yue2
+    files:
+      - name: YuE2_Acoustic_int8_convrot.safetensors
+        size: 1522568148
+        sha256: 6e66f94fa7145fd2e28b491d14182cd51d72653b7965d80ec23ae3ff24a92755
+      - name: YuE2_AR/YuE2_AR_int8_convrot.safetensors
+        size: 2925023698
+        sha256: 02ae63099e82496a6b61ea7ef15aa729bc5503a50ed2d64a1da328dcc40ea5cb
+      - name: YuE2_AR/qwen.tiktoken
+        size: 2561218
+        sha256: b2b1b8dfb5cc5f024bafc373121c6aba3f66f9a5a0269e243470a1de16a33186
+      - name: yue2/YuE2_VAE_bf16.safetensors
+        size: 132731320
+        sha256: 499714f69404d378b19a6fcbba9a8f99b4babfaed3f706e52c6dfa4e9521db67
+      - name: yue2/vae_config.json
+        size: 1378
+        sha256: f0191bb9694009956de44e0c361a6f1334760be4c8f848e599bde242a54a0970

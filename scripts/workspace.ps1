@@ -15,8 +15,9 @@ Start-Transcript -LiteralPath $log | Out-Null
 try {
     & "$PSScriptRoot/directories.ps1"
     & "$PSScriptRoot/packages.ps1"
-    Write-Host "`nBootstrap foundation complete. Applications and models remain planned."
-    Write-Host 'Next: just doctor'
+    Write-Host "`nBootstrap foundation complete. Optional tools are installed separately."
+    Write-Host 'YuE2: just install yue; just models yue; just validate yue'
+    Write-Host 'Diagnostics: just doctor'
 } catch {
     Write-Host "`nBootstrap failed: $($_.Exception.Message)"
     Write-Host 'Retry safely with: just bootstrap'

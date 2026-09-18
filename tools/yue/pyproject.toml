@@ -1,0 +1,23 @@
+[project]
+name = "workstation-yue-runner"
+version = "0.1.0"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  "setuptools<81",
+  "requests", "filelock",
+  "xxhash",
+  "torch==2.10.0", "torchvision==0.25.0",
+  "mmgp==3.8.0", "transformers==4.54.0", "numpy==2.1.2",
+  "accelerate>=1.1.1", "tiktoken", "einops", "tqdm", "soundfile",
+  "huggingface-hub[hf-xet]", "safetensors", "PyYAML==6.0.2",
+  "markdown-it-py==3.0.0", "triton-windows>=3.6,<3.7; sys_platform == 'win32'",
+]
+
+[[tool.uv.index]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch" }
+torchvision = { index = "pytorch" }

@@ -1,4 +1,6 @@
 #requires -Version 7.4
+[CmdletBinding()]
+param([switch]$HelpersOnly)
 . "$PSScriptRoot/common.ps1"
 Update-ProcessPath
 $workspace = Get-WorkspaceConfig
@@ -14,5 +16,9 @@ foreach ($entry in $workspace.Paths.GetEnumerator()) {
     if (Test-Path -LiteralPath $entry.Value -PathType Container) { Write-Host "  OK $($entry.Key)" }
     else { $failures++; Write-Host "  FAIL $($entry.Key): missing directory. Repair: just directories" }
 }
-Write-Host 'Applications/GPU/models: checks pending; this report covers the bootstrap foundation only.'
+if (-not $HelpersOnly -and (Test-Path -LiteralPath (Join-Path $script:RepositoryRoot 'config/tools.yaml'))) {
+    . "$PSScriptRoot/../tools/yue/common.ps1"
+    try { & "$PSScriptRoot/../tools/yue/validate.ps1" }
+    catch { $failures++; Write-Host "  FAIL YuE: $($_.Exception.Message)" }
+}
 if ($failures) { throw "Doctor found $failures problem(s). See repair commands above." }

@@ -1,6 +1,6 @@
 # Bootstrap foundation
 
-The first implementation reconciles helper packages and workspace directories using PowerShell 7.4 or newer. Windows 11 is the primary target; Windows 10 build 19041+ is allowed with a warning for the foundation, and skip/rerun behavior has been checked on this Windows 10 22H2 workstation. Individual application compatibility is still unverified. Application installation, model downloads, runner environments, GPU checks, profile selection, and software updates are still planned. This is not yet a complete unattended fresh-machine bootstrap.
+The first implementation reconciles helper packages and workspace directories using PowerShell 7.4 or newer. Windows 11 is the primary target; Windows 10 build 19041+ is allowed with a warning for the foundation, and skip/rerun behavior has been checked on this Windows 10 22H2 workstation. YuE2 now has a separately invoked native Windows installer, pinned model downloads, runner environment and GPU validation; see [YuE2](tools/yue.md). Other application installers, profile selection and software updates remain planned. This is not yet a complete unattended fresh-machine bootstrap.
 
 ## Initial setup
 
@@ -26,7 +26,7 @@ For an existing PowerShell/`just` setup:
 just setup
 just plan
 just bootstrap
-just doctor
+just doctor-helpers
 ```
 
 `just setup` installs only the YAML parser. A plan requires that parser to be available already; it does not install it. `bootstrap.ps1 -WhatIf` also avoids dependency installation.
@@ -61,7 +61,7 @@ Close the elevated shell and open a new **normal-user PowerShell** shell. Return
 ```powershell
 Set-Location C:\AI
 pwsh -NoProfile -File bootstrap.ps1
-just doctor
+just doctor-helpers
 ```
 
 Use your actual checkout path in place of `C:\AI`. Completed helper installations are preserved and skipped. Prefer this targeted repair over running the entire package reconciliation elevated, which can install user-scoped helpers under the wrong account.
@@ -81,11 +81,12 @@ Package discovery adds known installer directories and refreshed user/machine PA
 | `just bootstrap` | Reconcile directories and helpers, then print the summary and log path. |
 | `just directories` | Create missing configured directories. |
 | `just packages` | Check helpers and attempt missing package installs. |
-| `just status` | Summarize usable helpers and configured directories. |
-| `just doctor` | Probe helpers/directories, report repairs, and fail if problems remain. |
+| `just status` | Summarize helpers, directories and configured YuE2 state. |
+| `just doctor-helpers` | Probe helpers/directories, report repairs, and fail if problems remain. |
+| `just doctor` | Include configured YuE2 source, imports, CUDA, model hashes and runner checks; missing tool state fails. |
 | `just test` | Exercise isolated directory reruns, data preservation, dry-run, path validation, and failed probes. |
 
-Each real workspace bootstrap writes a unique transcript under the configured `logs/` directory. It records command output, errors, and the final summary. Direct `just packages` output is currently terminal-only; use `just bootstrap` when persistent installation logs are needed. Package reconciliation collects failures across the package set and reports them together; later application/model stages do not yet exist. If log-directory creation or configuration loading fails, the error appears before a transcript can start.
+Each real workspace bootstrap writes a unique transcript under the configured `logs/` directory. It records command output, errors, and the final summary. Direct `just packages` output is currently terminal-only; use `just bootstrap` when persistent installation logs are needed. Package reconciliation collects failures across the package set and reports them together; application/model reconciliation is currently invoked separately with `just install yue` and `just models yue`. If log-directory creation or configuration loading fails, the error appears before a transcript can start.
 
 Rerun `just bootstrap` after fixing a reported failure. Already usable tools and existing directories are skipped. User content is never reset or removed. The test command retains its isolated fixtures under ignored `cache/bootstrap-tests/` for inspection.
 

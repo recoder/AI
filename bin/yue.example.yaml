@@ -1,0 +1,38 @@
+version: 1
+tool: yue
+backend: wan2gp-yue2
+identities:
+  source_revision: bfaff285463ef6124c2357136e8d36c6c93c0fb2
+  model_revision: 5020589aa562cea206a25eea208d7cbb1f6efae7
+# Relative to this config file. Installation creates an untracked yue.yaml
+# with absolute paths derived from config/workspace.yaml.
+paths:
+  application: ../apps/wan2gp
+  python: ../apps/wan2gp/.venv/Scripts/python.exe
+  entrypoint: yue_backend.py
+  models:
+    acoustic: ../models/music/yue2/YuE2_Acoustic_int8_convrot.safetensors
+    ar: ../models/music/yue2/YuE2_AR/YuE2_AR_int8_convrot.safetensors
+    tokenizer: ../models/music/yue2/YuE2_AR/qwen.tiktoken
+    vae: ../models/music/yue2/yue2/YuE2_VAE_bf16.safetensors
+    vae_config: ../models/music/yue2/yue2/vae_config.json
+runtime:
+  budgets:
+    text_encoder: 5000
+    transformer: 4000
+    '*': 3000
+  profile: 4
+  vae_tile_size: 256
+  timeout_seconds: 1800
+defaults:
+  seed: 42
+  duration_seconds: 30
+  steps: 32
+  guidance_scale: 1.0
+  temperature: 1.0
+  top_k: 100
+  top_p: 0.95
+  tool_options:
+    planning: full
+output:
+  directory: ../work/music/generated

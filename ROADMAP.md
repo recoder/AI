@@ -45,20 +45,27 @@ Order of work: job/runner contract → bootstrap and helper tools → shared run
 - [x] Document per-tool flavors and a common runner/configuration contract in `docs/song-generation-jobs.md`.
 - [x] Define current-directory-first YAML lookup with fallback beside the Python runner in `<workspace>/bin/`.
 - [ ] Confirm each flavor's supported fields and upstream mappings against the selected revision before installing its tool.
-- [ ] Implement shared parsing, config selection, default precedence, path resolution, and actionable validation.
+- [x] Implement shared parsing, config selection, default precedence, path resolution, and actionable validation for the first adapter.
 - [ ] Implement a Python runner for each tool in `bin/`, with local YAML configs and tracked example templates.
-- [ ] Add `--validate` and `--dry-run` without loading models or starting inference.
-- [ ] Test parsing, config lookup, defaults, unsupported inputs, paths with spaces, and translation without requiring GPU installs.
-- [ ] Preserve job inputs and generation outputs; record effective settings and failure logs for every run.
+- [x] Add YuE2 `--validate` and `--dry-run` without loading models or starting inference.
+- [x] Test parsing, config lookup, defaults, unsupported inputs, paths with spaces, and translation without requiring GPU installs.
+- [x] Preserve job inputs and generation outputs; record effective settings and failure logs for every YuE2 run.
 
 ## YuE
 
-- [ ] Research the official project and explicitly choose original YuE or YuE2, revision, Windows/WSL runtime, dependencies, GPU requirements, and disk usage.
-- [ ] Finalize the `yue` flavor and `bin/yue.py` adapter for the chosen generation path.
-- [ ] Declare app/environment/model paths and resumable model acquisition in manifests.
-- [ ] Implement idempotent installation and separate updates.
-- [ ] Validate a small generation through a Markdown job; integrate status and doctor checks.
-- [ ] Document setup, supported inputs, model storage, and recovery in `docs/tools/yue.md`.
+- [x] Research original YuE and YuE2, compare native Windows backends and record the initial GPU/WSL preflight.
+- [x] Select Wan2GP YuE2 on native Windows and pin source/model revisions and a frozen dependency lock.
+- [x] Prepare isolated Python 3.11.13 runtime with PyTorch 2.10/CUDA 13.0, MMGP 3.8 and Triton Windows 3.6.
+- [x] Verify pipeline imports and CUDA/BF16 matrix multiplication on RTX 5070 Ti (16 GB).
+- [x] Implement shared safe Markdown/YAML parsing and `bin/yue.py`, current-directory-first config lookup, defaults, validation/dry-run, unique output preservation and logs.
+- [x] Pass CPU-only regression checks for parsing, malformed inputs, config lookup, paths with spaces, precedence and literal conditioning.
+- [x] Declare five shared model artifacts with exact sizes/revisions and weight hashes; implement separate resumable downloads and offline validation.
+- [x] Add native source/environment/model/config state reporting and deep YuE2 checks to doctor.
+- [x] Document installation, job flavor, generation, storage and recovery in `docs/tools/yue.md`.
+- [x] Complete model acquisition and verify all five artifact hashes on the development workstation.
+- [x] Validate a 30-second stereo 48 kHz clip through the native Markdown runner on RTX 5070 Ti, 16 GB (2026-09-18); record the duration-cap truncation.
+- [ ] Verify the full native install on a fresh Windows machine.
+- [ ] Add an explicit update operation with compatibility validation.
 
 ## ACE-Step
 

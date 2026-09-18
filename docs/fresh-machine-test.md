@@ -1,6 +1,6 @@
 # Fresh-machine bootstrap test
 
-Use this procedure to test the bootstrap foundation on a newly installed Windows machine. It covers helper installation, directory creation, diagnostics, and safe reruns. Music applications, models, Python runners, GPU validation, and a complete unattended Stage 0 are not implemented yet.
+Use this procedure to test the bootstrap foundation on a newly installed Windows machine. It covers helper installation, directory creation, diagnostics, and safe reruns. YuE2 now has a separate native Windows install/model/runner workflow in [its guide](tools/yue.md). This procedure tests helpers independently; a complete unattended Stage 0 remains planned.
 
 Windows 11 is the primary target. The foundation also permits Windows 10 build 19041+ with a warning. Use the same Windows user account for setup and normal workspace operations so current-user packages and the YAML module are installed for the intended operator.
 
@@ -129,7 +129,7 @@ Set-Location C:\AI
 pwsh -NoProfile -File bootstrap.ps1
 ```
 
-Then run `just doctor` from the normal-user shell to verify the repair. The operator confirmed this 7-Zip recovery sequence worked on a fresh-machine checkout at `C:\AI` on 2026-09-18. See the [bootstrap repair notes](bootstrap.md#recovering-from-the-7-zip-elevation-failure) for the exact sequence and evidence limits.
+Then run `just doctor-helpers` from the normal-user shell to verify the repair. The operator confirmed this 7-Zip recovery sequence worked on a fresh-machine checkout at `C:\AI` on 2026-09-18. See the [bootstrap repair notes](bootstrap.md#recovering-from-the-7-zip-elevation-failure) for the exact sequence and evidence limits.
 
 If `just` is not yet found in a newly opened shell, continue using the root PowerShell command and save the failure output. Do not treat a successful installer exit as proof that a helper is usable.
 
@@ -139,9 +139,9 @@ After bootstrap reports success:
 
 ```powershell
 just status
-just doctor
+just doctor-helpers
 just bootstrap
-just doctor
+just doctor-helpers
 just test
 git status --short
 ```
@@ -149,7 +149,7 @@ git status --short
 Expected results for the current manifests:
 
 - Status reports **7/7 helper packages** and **10/10 configured directories**.
-- Doctor reports all helper/directory checks as `OK` and exits successfully. Its application/GPU/model checks remain pending.
+- Doctor reports all helper/directory checks as `OK` and exits successfully. Full `just doctor` also checks configured YuE2 and will fail until its runtime, GPU and models are ready.
 - The second bootstrap skips usable helpers, preserves existing directories, and creates another unique log. It should perform no package upgrades or repeat downloads.
 - Tests pass, including directory preservation, dry-run, timeout, failed-probe, literal-argument, PATH-rerun, and invalid-configuration checks. Test fixtures remain under the checkout's ignored `cache/bootstrap-tests/` directory.
 - `git status --short` is empty unless you intentionally edited tracked manifests. Runtime directories/logs should not appear as untracked repository content.
@@ -212,4 +212,4 @@ WinGet diagnostic logs normally live under:
 %LOCALAPPDATA%\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\LocalState\DiagOutputDir
 ```
 
-Review logs before sharing; redact tokens or other credentials if present. Keep logs out of Git. A successful report validates this foundation on that machine, not the still-planned music tool installations.
+Review logs before sharing; redact tokens or other credentials if present. Keep logs out of Git. A successful report validates this foundation on that machine, and does not validate YuE2. To extend the fresh-machine test, follow the YuE2 guide, run `just install yue`, `just models yue`, `just validate yue`, `just test-music`, full `just doctor`, and the example generation. Preserve installation/model logs and report GPU/driver, audio duration/format and truncation metadata.

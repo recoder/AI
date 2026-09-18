@@ -1,0 +1,31 @@
+version: 1
+tools:
+  yue:
+    generation: YuE2
+    backend: wan2gp
+    repo: https://github.com/deepbeepmeep/Wan2GP.git
+    branch: main
+    revision: bfaff285463ef6124c2357136e8d36c6c93c0fb2
+    path: apps/wan2gp
+    entrypoint: models/TTS/yue2/pipeline.py
+    runtime: native
+    python: '3.11.13'
+    model_path: models/music/yue2
+    runtime_settings:
+      profile: 4
+      vae_tile_size: 256
+      timeout_seconds: 1800
+      budgets:
+        text_encoder: 5000
+        transformer: 4000
+        '*': 3000
+    defaults:
+      seed: 42
+      duration_seconds: 30
+      steps: 32
+      guidance_scale: 1.0
+      temperature: 1.0
+      top_k: 100
+      top_p: 0.95
+      tool_options:
+        planning: full

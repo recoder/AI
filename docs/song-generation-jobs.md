@@ -94,7 +94,7 @@ Each finalized flavor gets a `docs/tools/<tool>.md` reference, a runnable exampl
 
 Official sources to consult when finalizing adapters:
 
-- [YuE repository](https://github.com/multimodal-art-projection/YuE). As checked on 2026-09-18, `main` documents YuE2 and links the original implementation on `YuE-v1`; choose explicitly before implementing `yue.py`.
+- [YuE repository](https://github.com/multimodal-art-projection/YuE). This workstation selects YuE2 through Wan2GP's native Windows pipeline; see the implemented [YuE2 flavor](tools/yue.md).
 - [ACE-Step repository](https://github.com/ace-step/ACE-Step) and [ACE-Step 1.5 inference API](https://ace-step.github.io/ACE-Step-1.5/en/INFERENCE). Choose a version before settling parameter mappings.
 - [LeVo / SongGeneration repository](https://github.com/tencent-ailab/SongGeneration).
 - [HeartMuLa heartlib repository](https://github.com/HeartMuLa/heartlib). Use `heartmula` as the canonical identifier for the requested Heart Moola tool.
