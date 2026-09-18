@@ -3,7 +3,7 @@ name = "workstation-yue-runner"
 version = "0.1.0"
 requires-python = ">=3.11,<3.12"
 dependencies = [
-  "setuptools<81",
+  "setuptools<84",
   "requests", "filelock",
   "xxhash",
   "torch==2.10.0", "torchvision==0.25.0",
