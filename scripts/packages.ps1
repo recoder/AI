@@ -4,7 +4,7 @@ param()
 . "$PSScriptRoot/common.ps1"
 Update-ProcessPath
 $failures = @()
-foreach ($package in (Read-WorkspaceManifest packages).packages) {
+foreach ($package in @(Get-PackageConfig)) {
     $state = Get-PackageState $package
     if ($state.Usable) { Write-Host "OK $($state.Name): $($state.Detail)"; continue }
     if (-not $PSCmdlet.ShouldProcess($package.name, "Install $($package.id) using winget")) { continue }
@@ -20,8 +20,13 @@ foreach ($package in (Read-WorkspaceManifest packages).packages) {
         $arguments = @('install', '--id', $package.id, '--exact', '--source', 'winget', '--scope', $package.scope,
             '--silent', '--disable-interactivity', '--accept-package-agreements', '--accept-source-agreements')
         if ($package.version) { $arguments += @('--version', $package.version) }
-        & winget @arguments
-        if ($LASTEXITCODE -ne 0) { throw "winget exited with $LASTEXITCODE. Inspect its output; retry just packages after resolving the failure." }
+        $timeout = if ($package.install_timeout_seconds) { $package.install_timeout_seconds } else { 1800 }
+        Write-Host "Installing $($package.name); timeout $timeout seconds."
+        $result = Invoke-WorkspaceCommand -FilePath (Get-Command winget -CommandType Application).Source -Arguments $arguments -TimeoutSeconds $timeout
+        if ($result.Output) { Write-Host $result.Output }
+        if ($result.ErrorOutput) { Write-Host $result.ErrorOutput }
+        if ($result.TimedOut) { throw "winget timed out after $timeout seconds; process terminated. Check installer state before retrying just packages." }
+        if ($result.ExitCode -ne 0) { throw (Get-InstallerFailureMessage $result.ExitCode) }
         Update-ProcessPath
         $verified = Get-PackageState $package
         if (-not $verified.Usable) { throw "Installed package is not usable: $($verified.Detail). Open a new shell and retry just packages." }

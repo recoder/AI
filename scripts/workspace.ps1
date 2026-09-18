@@ -3,6 +3,7 @@
 param([switch]$WhatIf)
 . "$PSScriptRoot/common.ps1"
 $workspace = Get-WorkspaceConfig
+if (-not $workspace.Paths.logs) { throw 'Missing logs directory declaration in config/workspace.yaml. Add workspace.directories.logs before running bootstrap.' }
 if ($WhatIf) {
     & "$PSScriptRoot/directories.ps1" -WhatIf
     & "$PSScriptRoot/packages.ps1" -WhatIf

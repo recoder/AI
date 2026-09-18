@@ -2,7 +2,7 @@
 . "$PSScriptRoot/common.ps1"
 Update-ProcessPath
 $workspace = Get-WorkspaceConfig
-$packages = @((Read-WorkspaceManifest packages).packages | ForEach-Object { Get-PackageState $_ })
+$packages = @(Get-PackageConfig | ForEach-Object { Get-PackageState $_ })
 $present = @($workspace.Paths.Values | Where-Object { Test-Path -LiteralPath $_ -PathType Container }).Count
 Write-Host "Workspace: $($workspace.Root)"
 Write-Host "Helper packages: $(@($packages | Where-Object Usable).Count)/$($packages.Count)"

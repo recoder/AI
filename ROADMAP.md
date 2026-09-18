@@ -33,8 +33,11 @@ Order of work: job/runner contract → bootstrap and helper tools → shared run
 - [x] Implement directory reconciliation, package probes/install logic, and thin `just` commands.
 - [ ] Configure shared cache environment variables and the Python runner environment.
 - [x] Add helper-tool status/doctor checks and document recovery commands.
+- [x] Document a detailed fresh-machine test procedure with prerequisite setup, privilege handling, rerun checks, and failure reporting.
+- [x] Debug process timeouts, probe launch failures, literal arguments, manifest order/validation, PATH reruns, and WinGet error diagnostics with isolated regression checks.
 - [ ] Expand Stage 0 to acquire PowerShell/App Installer and clone the repository when absent.
 - [ ] Verify missing-package installations in a clean Windows environment; current-machine checks exercise skip/rerun behavior.
+- [x] Record operator-confirmed fresh-machine ffmpeg installation and recovery from the 7-Zip elevation failure using a targeted administrator install and normal-shell retry (2026-09-18).
 
 ## Shared music job format and runners
 

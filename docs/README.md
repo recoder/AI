@@ -4,6 +4,7 @@ Keep detailed operator documentation in this directory. The root `README.md` is 
 
 - [Song-generation jobs and runners](song-generation-jobs.md): proposed shared format, per-tool flavors, YAML configuration lookup, and execution behavior. Implementation is pending.
 - [Bootstrap foundation](bootstrap.md): setup, configuration, commands, validation, and recovery.
+- [Fresh-machine test guide](fresh-machine-test.md): detailed prerequisite setup, first run, repairs, rerun verification, and failure reporting.
 
 As implementation progresses, add guides for:
 

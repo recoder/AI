@@ -4,7 +4,7 @@ Update-ProcessPath
 $workspace = Get-WorkspaceConfig
 $failures = 0
 Write-Host 'Helper tools'
-foreach ($package in (Read-WorkspaceManifest packages).packages) {
+foreach ($package in @(Get-PackageConfig)) {
     $state = Get-PackageState $package
     if ($state.Usable) { Write-Host "  OK $($state.Name): $($state.Detail)" }
     else { $failures++; Write-Host "  FAIL $($state.Name): $($state.Detail). Repair: just packages" }
