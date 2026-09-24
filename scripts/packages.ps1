@@ -1,10 +1,12 @@
 #requires -Version 7.4
 [CmdletBinding(SupportsShouldProcess)]
-param()
+param([string[]]$Names, [switch]$MachineOnly)
 . "$PSScriptRoot/common.ps1"
 Update-ProcessPath
 $failures = @()
 foreach ($package in @(Get-PackageConfig)) {
+    if ($Names -and $package.name -notin $Names) { continue }
+    if ($MachineOnly -and $package.scope -ne 'machine') { continue }
     $state = Get-PackageState $package
     if ($state.Usable) { Write-Host "OK $($state.Name): $($state.Detail)"; continue }
     if (-not $PSCmdlet.ShouldProcess($package.name, "Install $($package.id) using winget")) { continue }
@@ -14,7 +16,7 @@ foreach ($package in @(Get-PackageConfig)) {
         if ($package.scope -eq 'machine') {
             $principal = [Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent())
             if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-                throw 'This missing machine package requires elevation. Run just packages in an administrator shell, then return to a normal shell.'
+                throw 'This missing machine package requires elevation. Run bootstrap.ps1 -MachineOnly in an administrator shell, then return to a normal shell and retry just bootstrap.'
             }
         }
         $arguments = @('install', '--id', $package.id, '--exact', '--source', 'winget', '--scope', $package.scope,

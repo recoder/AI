@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "packages": [
+    {
+      "name": "git",
+      "version": null,
+      "id": "Git.Git",
+      "scope": "machine",
+      "command": "git",
+      "arguments": [
+        "--version"
+      ]
+    },
+    {
+      "name": "git-lfs",
+      "version": null,
+      "id": "GitHub.GitLFS",
+      "scope": "machine",
+      "command": "git",
+      "arguments": [
+        "lfs",
+        "version"
+      ]
+    },
+    {
+      "name": "powershell",
+      "version": null,
+      "id": "Microsoft.PowerShell",
+      "scope": "machine",
+      "command": "pwsh",
+      "arguments": [
+        "--version"
+      ]
+    },
+    {
+      "name": "just",
+      "version": null,
+      "id": "Casey.Just",
+      "scope": "user",
+      "command": "just",
+      "arguments": [
+        "--version"
+      ]
+    },
+    {
+      "name": "uv",
+      "version": null,
+      "id": "astral-sh.uv",
+      "scope": "user",
+      "command": "uv",
+      "arguments": [
+        "--version"
+      ]
+    },
+    {
+      "name": "ffmpeg",
+      "version": null,
+      "id": "Gyan.FFmpeg",
+      "scope": "user",
+      "command": "ffmpeg",
+      "arguments": [
+        "-version"
+      ]
+    },
+    {
+      "name": "7zip",
+      "version": null,
+      "id": "7zip.7zip",
+      "scope": "machine",
+      "command": "7z",
+      "arguments": [
+        "i"
+      ]
+    }
+  ]
+}

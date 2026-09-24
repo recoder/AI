@@ -1,0 +1,4 @@
+version: 1
+# Optional user repositories; bootstrap clones missing repositories and preserves existing work.
+# Add logical names to a profile's repos list to select them.
+repos: {}

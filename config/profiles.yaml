@@ -1,0 +1,14 @@
+version: 1
+default: music
+profiles:
+  core:
+    packages: [git, git-lfs, powershell, just, uv, ffmpeg, 7zip]
+    tools: []
+    models: []
+    repos: []
+  music:
+    includes: [core]
+    tools: [yue]
+    models: [yue]
+  full:
+    includes: [music]

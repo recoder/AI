@@ -2,11 +2,11 @@
 
 A version-controlled specification for rebuilding a self-hosted Windows AI workstation.
 
-The bootstrap foundation creates workspace directories and reconciles helper packages. YuE2 has a native Windows installer and Markdown song runner; other music tools remain planned.
+The profile-driven bootstrap creates workspace directories, reconciles prerequisites, configures shared caches, and installs the selected applications and models. YuE2 has a native Windows installer and Markdown song runner; other music tools remain planned.
 
 Install YuE2 with `just install yue`, acquire its pinned models with `just models yue`, then run `just validate yue`. See [YuE integration](docs/tools/yue.md) for generation commands, hardware requirements and recovery.
 
-With PowerShell 7.4+ and this repository available locally, run `./bootstrap.ps1`. For an existing `just` setup, run `just setup`, `just plan`, and `just bootstrap`, then `just doctor-helpers`. Full `just doctor` also validates the configured YuE2 installation. See the [bootstrap guide](docs/bootstrap.md) for prerequisite installation, configuration, and recovery.
+On a new Windows machine, Windows PowerShell 5.1 can run `bootstrap.ps1`; Stage 0 acquires WinGet and declared prerequisites, clones the repository when needed, and delegates to PowerShell 7. For an existing checkout, use `just plan core`, `just bootstrap core`, and `just doctor core`, or omit the profile to select `music`. See the [bootstrap guide](docs/bootstrap.md) for privilege handling, configuration, and recovery.
 
 - [Roadmap](ROADMAP.md): planned and completed tasks for the workspace and each candidate tool.
 - [Documentation](docs/README.md): operator guides and tool documentation.

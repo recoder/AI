@@ -1,35 +1,35 @@
 # Bootstrap foundation
 
-The first implementation reconciles helper packages and workspace directories using PowerShell 7.4 or newer. Windows 11 is the primary target; Windows 10 build 19041+ is allowed with a warning for the foundation, and skip/rerun behavior has been checked on this Windows 10 22H2 workstation. YuE2 now has a separately invoked native Windows installer, pinned model downloads, runner environment and GPU validation; see [YuE2](tools/yue.md). Other application installers, profile selection and software updates remain planned. This is not yet a complete unattended fresh-machine bootstrap.
+The bootstrap has two stages. `bootstrap.ps1` runs under Windows PowerShell 5.1, acquires WinGet and declared prerequisites, clones the repository when absent, and delegates to PowerShell 7. Stage 1 expands a selected profile and reconciles directories, packages, shared caches, applications, repositories, models, and validation. Windows 11 is the primary target; Windows 10 build 19041+ receives a compatibility warning. YuE2 is the first application integration; see [YuE2](tools/yue.md).
 
 ## Initial setup
 
 For a newly installed machine, follow the [fresh-machine test guide](fresh-machine-test.md), including publication of the tested revision, prerequisite preparation, privilege handling, and result collection.
 
-Start with this repository already cloned or copied locally and PowerShell 7.4+ installed. If PowerShell is missing, install it using Windows App Installer's `winget`:
+From an existing checkout, a normal user shell can run:
 
 ```powershell
-winget install --id Microsoft.PowerShell --exact --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
+.\bootstrap.ps1 -Profile core
 ```
 
-Open a new shell and run from the repository:
+If machine-scoped prerequisites are missing, Stage 0 stops with an actionable message. Open an administrator shell only for that phase:
 
 ```powershell
-.\bootstrap.ps1
+.\bootstrap.ps1 -MachineOnly
 ```
 
-The root script can be launched from Windows PowerShell 5.1. It verifies the Windows build, locates PowerShell 7, installs pinned `powershell-yaml` 0.4.12 for the current user if missing, and invokes workspace reconciliation through PowerShell 7. It does not require `just` to be installed before starting. Install Windows App Installer manually if `winget` is unavailable. Automatic acquisition of these initial prerequisites and repository cloning remain roadmap tasks.
+Return to a normal shell and rerun the first command. Stage 0 can repair a missing WinGet installation through Microsoft's `Microsoft.WinGet.Client` module, and it can clone `recoder/AI` to `D:\AI` (or `C:\AI` when `D:` is unavailable). Use `-RepositoryPath` or `AI_WORKSPACE_ROOT` to select another location. It never replaces a nonempty directory or a repository with the wrong origin.
 
 For an existing PowerShell/`just` setup:
 
 ```powershell
 just setup
-just plan
-just bootstrap
-just doctor-helpers
+just plan core
+just bootstrap core
+just doctor core
 ```
 
-`just setup` installs only the YAML parser. A plan requires that parser to be available already; it does not install it. `bootstrap.ps1 -WhatIf` also avoids dependency installation.
+Omit `core` to use the manifest's default `music` profile, which includes YuE2 and its pinned models. `bootstrap.ps1 -WhatIf` and `just plan <profile>` avoid mutation.
 
 ## Configuration
 
@@ -42,7 +42,9 @@ just plan
 
 Relative manifest root paths resolve against `config/`; an environment override follows the same rule if relative. Prefer an absolute environment override. Derived directory paths must stay below the workspace root. Directory reconciliation creates missing paths and preserves existing content; a file blocking a configured directory is an error.
 
-`config/packages.yaml` declares helper commands, version probes, WinGet identifiers, installation scope, and optional exact versions. `version: null` accepts an existing executable whose probe succeeds. This verifies usability, not which installer originally supplied the executable. Bootstrap skips usable packages and never runs a bulk upgrade. If a version is pinned and an existing executable mismatches it, the command reports the mismatch for explicit operator resolution.
+`config/packages.json` declares helper commands, version probes, WinGet identifiers, installation scope, and optional exact versions. JSON is used for this Stage 0 manifest because Windows PowerShell 5.1 can parse it before the YAML module exists. `config/profiles.yaml` groups packages, tools, model groups, and user repositories; includes are expanded once and cycles or unknown components are rejected. `version: null` accepts an existing executable whose probe succeeds. Bootstrap skips usable packages and never runs a bulk upgrade.
+
+`config/workspace.yaml` also maps `UV_CACHE_DIR`, `HF_HOME`, `TORCH_HOME`, `PIP_CACHE_DIR`, and `TRITON_CACHE_DIR` to declared workspace directories. Stage 1 validates the whole mapping before persisting it for the user. `config/repos.yaml` declares optional repositories under `work/`; reconciliation clones absent repositories and refuses wrong remotes, revisions, or conflicting content without resetting local work.
 
 Manifest order determines directory/package processing order. Invalid package mappings, duplicate package names, invalid scopes, and invalid timeout values are rejected before any package installs. Probes default to a 30-second timeout; installs default to 1800 seconds. Override these per package with `probe_timeout_seconds` and `install_timeout_seconds` (integers from 1 to 86400). A hung process is terminated with its child processes; diagnostics report the timeout instead of blocking indefinitely. Process-launch failures are reported as unusable package state so later checks can continue. Installer stdout/stderr are captured separately and printed when the installer finishes or times out.
 
@@ -70,23 +72,24 @@ An installer message saying PATH changed means a new shell may be needed. The ex
 
 On 2026-09-18, the operator reported that a fresh-machine run under `C:\AI` installed ffmpeg, stopped at the 7-Zip elevation check, and recovered successfully using the targeted administrator install followed by a normal-shell bootstrap/doctor retry. This confirms that repair path; it does not establish that every helper's missing-package installation or the complete fresh-machine workflow has been tested.
 
-Package discovery adds known installer directories and refreshed user/machine PATH values to the current process only. It does not change persistent PATH or globally initialize Git LFS. If an installer requires a reboot or still cannot expose its command, reconciliation fails verification; follow the installer guidance, restart as needed, and rerun. Automatic reboot detection remains planned.
+Package discovery adds known installer directories and refreshed user/machine PATH values to the current process only. It does not change persistent PATH or globally initialize Git LFS. Bootstrap detects common Component Based Servicing and Windows Update reboot flags and stops dependent work when a package creates a new reboot requirement. If an installer requires another kind of reboot or still cannot expose its command, follow its guidance, restart, and rerun the same profile.
 
 ## Commands and recovery
 
 | Command | Behavior |
 | --- | --- |
 | `just setup` | Ensure the pinned YAML parser exists for the current user. |
-| `just plan` | Probe packages and show intended directory/package changes without mutation. |
-| `just bootstrap` | Reconcile directories and helpers, then print the summary and log path. |
+| `just plan [profile]` | Show selected components and intended changes without mutation. |
+| `just bootstrap [profile]` | Reconcile the selected profile and print an actionable summary and log path. |
 | `just directories` | Create missing configured directories. |
 | `just packages` | Check helpers and attempt missing package installs. |
-| `just status` | Summarize helpers, directories and configured YuE2 state. |
+| `just status [profile]` | Summarize configured state for a profile. |
 | `just doctor-helpers` | Probe helpers/directories, report repairs, and fail if problems remain. |
-| `just doctor` | Include configured YuE2 source, imports, CUDA, model hashes and runner checks; missing tool state fails. |
+| `just doctor [profile]` | Deeply validate the selected packages, caches, tools, models, repositories, credentials, and disk space. |
+| `just repos` | Reconcile declared user repositories without resetting local changes. |
 | `just test` | Exercise isolated directory reruns, data preservation, dry-run, path validation, and failed probes. |
 
-Each real workspace bootstrap writes a unique transcript under the configured `logs/` directory. It records command output, errors, and the final summary. Direct `just packages` output is currently terminal-only; use `just bootstrap` when persistent installation logs are needed. Package reconciliation collects failures across the package set and reports them together; application/model reconciliation is currently invoked separately with `just install yue` and `just models yue`. If log-directory creation or configuration loading fails, the error appears before a transcript can start.
+Each real workspace bootstrap writes a unique transcript under the configured `logs/` directory. It records component output, failures, repair commands, and the final summary. Model reconciliation is shared across tool groups, verifies declared sizes and hashes, and preserves resumable partial downloads. If a prerequisite or cache phase fails, dependent application/model work is skipped and completed state remains intact.
 
 Rerun `just bootstrap` after fixing a reported failure. Already usable tools and existing directories are skipped. User content is never reset or removed. The test command retains its isolated fixtures under ignored `cache/bootstrap-tests/` for inspection.
 

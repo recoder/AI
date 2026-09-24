@@ -5,6 +5,12 @@ $script:YamlVersion = '0.4.12'
 
 function Read-WorkspaceManifest {
     param([Parameter(Mandatory)][string]$Name)
+    $jsonPath = Join-Path $script:RepositoryRoot "config/$Name.json"
+    if (Test-Path -LiteralPath $jsonPath -PathType Leaf) {
+        $data = Get-Content -LiteralPath $jsonPath -Raw | ConvertFrom-Json -AsHashtable
+        if ($data.version -ne 1) { throw "Invalid manifest '$jsonPath': expected version 1." }
+        return $data
+    }
     if (-not (Get-Module powershell-yaml | Where-Object Version -EQ $script:YamlVersion)) {
         try { Import-Module powershell-yaml -RequiredVersion $script:YamlVersion -ErrorAction Stop }
         catch { throw "YAML support is missing. Run pwsh -File scripts/setup.ps1, then retry. $($_.Exception.Message)" }
@@ -44,7 +50,7 @@ function Get-WorkspaceConfig {
 
 function Get-PackageConfig {
     $packages = (Read-WorkspaceManifest packages).packages
-    if ($packages -isnot [System.Collections.IList]) { throw 'Invalid config/packages.yaml: packages must be a list.' }
+    if ($packages -isnot [System.Collections.IList]) { throw 'Invalid package manifest: packages must be a list.' }
     $names = @{}
     foreach ($package in $packages) {
         if ($package -isnot [System.Collections.IDictionary]) { throw 'Invalid package declaration: each package must be a mapping.' }

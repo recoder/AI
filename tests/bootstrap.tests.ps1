@@ -1,7 +1,7 @@
 #requires -Version 7.4
 # Focused bootstrap checks without installers or external test dependencies.
 $ErrorActionPreference = 'Stop'
-. "$PSScriptRoot/../scripts/common.ps1"
+. "$PSScriptRoot/../scripts/profiles.ps1"
 function Assert-True {
     param([bool]$Condition, [string]$Message)
     if (-not $Condition) { throw "Assertion failed: $Message" }
@@ -13,6 +13,10 @@ try {
     $config = Get-WorkspaceConfig
     Assert-True ($config.Root -eq $testRoot) 'environment override determines workspace root'
     Assert-True ($config.Paths.bin -eq (Join-Path $testRoot 'bin')) 'bin derives from workspace root'
+    $core = Get-WorkspaceProfile core
+    Assert-True ($core.packages.Count -eq 7 -and $core.tools.Count -eq 0) 'core profile selects prerequisites only'
+    $music = Get-WorkspaceProfile music
+    Assert-True ($music.packages.Count -eq 7 -and @($music.tools) -contains 'yue' -and @($music.models) -contains 'yue') 'music profile expands core and YuE'
 
     & "$PSScriptRoot/../scripts/directories.ps1" -WhatIf
     Assert-True (-not (Test-Path -LiteralPath $testRoot)) 'dry-run creates no directories'

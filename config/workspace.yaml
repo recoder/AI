@@ -10,6 +10,17 @@ workspace:
     cache: cache
     huggingface_cache: cache/huggingface
     uv_cache: cache/uv
+    torch_cache: cache/torch
+    pip_cache: cache/pip
+    triton_cache: cache/triton
     logs: logs
     work: work
     music_work: work/music
+    work_repos: work/repos
+  environment:
+    UV_CACHE_DIR: uv_cache
+    HF_HOME: huggingface_cache
+    TORCH_HOME: torch_cache
+    PIP_CACHE_DIR: pip_cache
+    TRITON_CACHE_DIR: triton_cache
+  environment_scope: user

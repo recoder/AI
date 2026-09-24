@@ -6,11 +6,11 @@ default:
 setup:
     pwsh -NoProfile -File scripts/setup.ps1
 
-bootstrap:
-    pwsh -NoProfile -File scripts/workspace.ps1
+bootstrap profile='':
+    pwsh -NoProfile -File scripts/workspace.ps1 -Profile '{{profile}}'
 
-plan:
-    pwsh -NoProfile -File scripts/workspace.ps1 -WhatIf
+plan profile='':
+    pwsh -NoProfile -File scripts/workspace.ps1 -Profile '{{profile}}' -WhatIf
 
 directories:
     pwsh -NoProfile -File scripts/directories.ps1
@@ -18,11 +18,11 @@ directories:
 packages:
     pwsh -NoProfile -File scripts/packages.ps1
 
-status:
-    pwsh -NoProfile -File scripts/status.ps1
+status profile='':
+    pwsh -NoProfile -File scripts/status.ps1 -Profile '{{profile}}'
 
-doctor:
-    pwsh -NoProfile -File scripts/doctor.ps1
+doctor profile='':
+    pwsh -NoProfile -File scripts/doctor.ps1 -Profile '{{profile}}'
 
 doctor-helpers:
     pwsh -NoProfile -File scripts/doctor.ps1 -HelpersOnly
@@ -48,3 +48,6 @@ models tool:
 
 test-music:
     pwsh -NoProfile -File tests/music.ps1
+
+repos:
+    pwsh -NoProfile -File scripts/repositories.ps1

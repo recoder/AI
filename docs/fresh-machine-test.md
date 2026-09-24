@@ -1,6 +1,6 @@
 # Fresh-machine bootstrap test
 
-Use this procedure to test the bootstrap foundation on a newly installed Windows machine. It covers helper installation, directory creation, diagnostics, and safe reruns. YuE2 now has a separate native Windows install/model/runner workflow in [its guide](tools/yue.md). This procedure tests helpers independently; a complete unattended Stage 0 remains planned.
+Use this procedure to test the bootstrap on a newly installed Windows machine. It covers Stage 0 acquisition, helper installation, directory creation, diagnostics, and safe reruns. Use the `core` profile to test the foundation without downloading YuE2; the default `music` profile includes the native YuE2 workflow documented in [its guide](tools/yue.md). The expanded Stage 0 still needs a full clean-machine verification.
 
 Windows 11 is the primary target. The foundation also permits Windows 10 build 19041+ with a warning. Use the same Windows user account for setup and normal workspace operations so current-user packages and the YAML module are installed for the intended operator.
 
@@ -120,7 +120,7 @@ winget install --id GitHub.GitLFS --exact --source winget --scope machine --sile
 winget install --id 7zip.7zip --exact --source winget --scope machine --silent --disable-interactivity --accept-package-agreements --accept-source-agreements
 ```
 
-Git for Windows may already supply Git LFS, so check `git lfs version` before adding another installer. These declarations are in `config/packages.yaml`; if the manifest changes, use the IDs/scopes declared by the tested version.
+Git for Windows may already supply Git LFS, so check `git lfs version` before adding another installer. These declarations are in `config/packages.json`; if the manifest changes, use the IDs/scopes declared by the tested version.
 
 Close the elevated shell and open a new normal-user PowerShell 7 shell. Return to the checkout, restore `AI_WORKSPACE_ROOT` if you set it, and rerun:
 

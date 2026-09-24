@@ -1,4 +1,4 @@
-"""Reconcile only the declared, pinned YuE2 artifacts."""
+"""Reconcile only the declared, pinned model artifacts."""
 import argparse
 import hashlib
 from pathlib import Path
@@ -59,12 +59,12 @@ def download_http(declaration, artifact, destination):
                 retries += 1
                 if retries > 3:
                     # Request exceptions can contain signed URLs/headers; do not print them.
-                    raise RuntimeError("HTTP download failed after retries; partial retained. Retry just models yue") from None
+                    raise RuntimeError("HTTP download failed after retries; partial retained. Retry the model reconciliation command") from None
                 print(f"  Retrying HTTP transfer ({type(error).__name__}, {retries}/3)", flush=True)
         if not check(partial, artifact):
             quarantine = partial.with_name(partial.name + ".invalid-" + uuid.uuid4().hex[:8])
             partial.replace(quarantine)
-            raise RuntimeError(f"Downloaded bytes failed verification; retained at {quarantine}. Retry just models yue")
+            raise RuntimeError(f"Downloaded bytes failed verification; retained at {quarantine}. Retry the model reconciliation command")
         partial.replace(path)
 
 
@@ -93,8 +93,9 @@ def main():
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--destination", type=Path, required=True)
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--group", default="yue")
     args = parser.parse_args()
-    declaration = yaml.safe_load(args.manifest.read_text(encoding="utf-8-sig"))["models"]["yue"]
+    declaration = yaml.safe_load(args.manifest.read_text(encoding="utf-8-sig"))["models"][args.group]
     if declaration.get("source") != "huggingface" or not re.fullmatch(r"[a-f0-9]{40}", declaration.get("revision", "")):
         raise ValueError("Models require Hugging Face and an exact source revision")
     if type(declaration.get("chunk_bytes", 64 * 2**20)) is not int or not 1024 <= declaration.get("chunk_bytes", 64 * 2**20) <= 256 * 2**20:
@@ -107,7 +108,7 @@ def main():
         if not check(path, artifact):
             missing.append(artifact)
     if missing and args.check:
-        parser.exit(1, "Missing/invalid YuE2 artifacts: " + ", ".join(a["name"] for a in missing) + ". Repair: just models yue\n")
+        parser.exit(1, "Missing/invalid model artifacts: " + ", ".join(a["name"] for a in missing) + f". Repair: just models {args.group}\n")
     if missing:
         if declaration.get("download_transport") == "http":
             # HTTP streams progress to the partial file rather than buffering Xet reconstruction.
@@ -125,8 +126,8 @@ def main():
                 hf_hub_download(repo_id=declaration["repo"], revision=declaration["revision"], filename=artifact["name"],
                                 local_dir=args.destination, force_download=force)
             if not check(path, artifact):
-                raise RuntimeError(f"Artifact verification failed: {path}. Retry just models yue")
-    print("OK YuE2 models: exact sizes, declared SHA-256 hashes and safetensors headers")
+                raise RuntimeError(f"Artifact verification failed: {path}. Retry the model reconciliation command")
+    print("OK models: exact sizes, declared SHA-256 hashes and safetensors headers")
 
 
 if __name__ == "__main__":
