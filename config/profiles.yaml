@@ -8,7 +8,7 @@ profiles:
     repos: []
   music:
     includes: [core]
-    tools: [yue]
-    models: [yue]
+    tools: [yue, ace-step]
+    models: [yue, ace-step]
   full:
     includes: [music]

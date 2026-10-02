@@ -1,5 +1,48 @@
 version: 1
 models:
+  ace-step:
+    source: huggingface
+    download_transport: http
+    chunk_bytes: 67108864
+    path: models/music/ace-step
+    repositories:
+      main:
+        repo: ACE-Step/Ace-Step1.5
+        revision: 19671f406d603126926c1b7e2adc169acbcade22
+      xl-sft:
+        repo: ACE-Step/acestep-v15-xl-sft
+        revision: d06de46b4622f781cf07f4a013a67d591ca52819
+    files:
+      - {name: Qwen3-Embedding-0.6B/added_tokens.json, size: 707, repository: main}
+      - {name: Qwen3-Embedding-0.6B/chat_template.jinja, size: 4116, repository: main}
+      - {name: Qwen3-Embedding-0.6B/config.json, size: 1359, repository: main}
+      - {name: Qwen3-Embedding-0.6B/merges.txt, size: 1671853, repository: main}
+      - {name: Qwen3-Embedding-0.6B/model.safetensors, size: 1191586416, sha256: 0437e45c94563b09e13cb7a64478fc406947a93cb34a7e05870fc8dcd48e23fd, repository: main}
+      - {name: Qwen3-Embedding-0.6B/special_tokens_map.json, size: 613, repository: main}
+      - {name: Qwen3-Embedding-0.6B/tokenizer.json, size: 11423705, sha256: def76fb086971c7867b829c23a26261e38d9d74e02139253b38aeb9df8b4b50a, repository: main}
+      - {name: Qwen3-Embedding-0.6B/tokenizer_config.json, size: 5404, repository: main}
+      - {name: Qwen3-Embedding-0.6B/vocab.json, size: 2776833, repository: main}
+      - {name: acestep-5Hz-lm-1.7B/added_tokens.json, size: 2217787, repository: main}
+      - {name: acestep-5Hz-lm-1.7B/chat_template.jinja, size: 4168, repository: main}
+      - {name: acestep-5Hz-lm-1.7B/config.json, size: 1385, repository: main}
+      - {name: acestep-5Hz-lm-1.7B/merges.txt, size: 1671853, repository: main}
+      - {name: acestep-5Hz-lm-1.7B/model.safetensors, size: 3708521528, sha256: f161689da73e5ecefa28ff780d51c2d92a00f056d021d7933c779ed5c6cd7db8, repository: main}
+      - {name: acestep-5Hz-lm-1.7B/special_tokens_map.json, size: 1824199, repository: main}
+      - {name: acestep-5Hz-lm-1.7B/tokenizer.json, size: 24321939, sha256: 35af56c3f5cb3ea2cc578aa28a8937770981d504f183ac5c8c38baf4bbd4af4d, repository: main}
+      - {name: acestep-5Hz-lm-1.7B/tokenizer_config.json, size: 14072925, sha256: 6cd70cdd89425971794f5235562edcc608b0629a6c4686ae51a8b8c8b8ba5e95, repository: main}
+      - {name: acestep-5Hz-lm-1.7B/vocab.json, size: 2776833, repository: main}
+      - {name: acestep-v15-turbo/config.json, size: 1968, repository: main}
+      - {name: acestep-v15-turbo/model.safetensors, size: 4787825604, sha256: 3f6e0797fad420a39bd33979eb6e840e30989e34a3794e843d23b60ec6e422d7, repository: main}
+      - {name: acestep-v15-turbo/silence_latent.pt, size: 3841215, sha256: a778e9dd942f5e8b2c09c55370782d318834432b03dabbcdf70e6ed49ad6358b, repository: main}
+      - {name: vae/config.json, size: 425, repository: main}
+      - {name: vae/diffusion_pytorch_model.safetensors, size: 337431388, sha256: da17edb604c40deaf09e9b24974e590d1ca83a374070e5d0884cfa4bed9a99b0, repository: main}
+      - {name: acestep-v15-xl-sft/config.json, source_name: config.json, size: 2525, repository: xl-sft}
+      - {name: acestep-v15-xl-sft/model-00001-of-00004.safetensors, source_name: model-00001-of-00004.safetensors, size: 4986971456, sha256: 1d304b8a34859cd92c349c71ae6c27d50564844c7f7611d2d32913f67508e5a4, repository: xl-sft}
+      - {name: acestep-v15-xl-sft/model-00002-of-00004.safetensors, source_name: model-00002-of-00004.safetensors, size: 4986942776, sha256: 94e33648f514fdd00f473f2d2680af959204b58b15f7ab37246ac16d066aac87, repository: xl-sft}
+      - {name: acestep-v15-xl-sft/model-00003-of-00004.safetensors, source_name: model-00003-of-00004.safetensors, size: 4986942808, sha256: befe558365f53bc6c44f3f7e521cb2dd026927a817c36aa05ad94fcd80a533a9, repository: xl-sft}
+      - {name: acestep-v15-xl-sft/model-00004-of-00004.safetensors, source_name: model-00004-of-00004.safetensors, size: 4988483464, sha256: dfbc77aa26e54d0127892d6e7f3c0868bfc4623aa067867f6595c3b2fb7d31a4, repository: xl-sft}
+      - {name: acestep-v15-xl-sft/model.safetensors.index.json, source_name: model.safetensors.index.json, size: 71471, repository: xl-sft}
+      - {name: acestep-v15-xl-sft/silence_latent.pt, source_name: silence_latent.pt, size: 3841215, sha256: a778e9dd942f5e8b2c09c55370782d318834432b03dabbcdf70e6ed49ad6358b, repository: xl-sft}
   yue:
     source: huggingface
     download_transport: http

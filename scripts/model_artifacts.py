@@ -19,8 +19,9 @@ def download_http(declaration, artifact, destination):
     from huggingface_hub.utils import build_hf_headers
     path = destination / artifact["name"]
     path.parent.mkdir(parents=True, exist_ok=True)
-    partial = path.with_name(path.name + "." + declaration["revision"] + ".partial")
-    url = hf_hub_url(declaration["repo"], artifact["name"], revision=declaration["revision"])
+    repo, revision, source_name = artifact_source(declaration, artifact)
+    partial = path.with_name(path.name + "." + revision + ".partial")
+    url = hf_hub_url(repo, source_name, revision=revision)
     with FileLock(str(partial) + ".lock", timeout=30), requests.Session() as session:
         # Reuse the provider's interrupted partial only when its name identifies the declared hash.
         if not partial.exists() and artifact.get("sha256"):
@@ -88,6 +89,24 @@ def check(path, artifact):
     return True
 
 
+def artifact_source(declaration, artifact):
+    """Resolve a file's immutable upstream repository while retaining old manifests."""
+    if "repositories" in declaration:
+        key = artifact.get("repository")
+        if not isinstance(key, str) or key not in declaration["repositories"]:
+            raise ValueError(f"Unknown model repository for {artifact.get('name', '<unnamed>')}")
+        source = declaration["repositories"][key]
+    else:
+        source = declaration
+    repo, revision = source.get("repo"), source.get("revision")
+    if not isinstance(repo, str) or not repo or not re.fullmatch(r"[a-f0-9]{40}", revision or ""):
+        raise ValueError("Models require a Hugging Face repository and exact 40-character revision")
+    source_name = artifact.get("source_name", artifact.get("name"))
+    if not isinstance(source_name, str) or not source_name:
+        raise ValueError("Model source_name must be a nonempty string")
+    return repo, revision, source_name
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, required=True)
@@ -96,12 +115,13 @@ def main():
     parser.add_argument("--group", default="yue")
     args = parser.parse_args()
     declaration = yaml.safe_load(args.manifest.read_text(encoding="utf-8-sig"))["models"][args.group]
-    if declaration.get("source") != "huggingface" or not re.fullmatch(r"[a-f0-9]{40}", declaration.get("revision", "")):
-        raise ValueError("Models require Hugging Face and an exact source revision")
+    if declaration.get("source") != "huggingface":
+        raise ValueError("Models require Hugging Face")
     if type(declaration.get("chunk_bytes", 64 * 2**20)) is not int or not 1024 <= declaration.get("chunk_bytes", 64 * 2**20) <= 256 * 2**20:
         raise ValueError("chunk_bytes must be an integer between 1 KiB and 256 MiB")
     missing = []
     for artifact in declaration["files"]:
+        artifact_source(declaration, artifact)
         path = (args.destination / artifact["name"]).resolve()
         if not path.is_relative_to(args.destination.resolve()):
             raise ValueError("Model artifact escapes destination")
@@ -116,6 +136,7 @@ def main():
         from huggingface_hub import hf_hub_download
         args.destination.mkdir(parents=True, exist_ok=True)
         for artifact in missing:
+            repo, revision, source_name = artifact_source(declaration, artifact)
             path = args.destination / artifact["name"]
             # A complete but corrupt artifact must not be trusted by HF's download metadata.
             force = path.is_file() and path.stat().st_size == artifact["size"]
@@ -123,8 +144,11 @@ def main():
             if declaration.get("download_transport") == "http":
                 download_http(declaration, artifact, args.destination)
             else:
-                hf_hub_download(repo_id=declaration["repo"], revision=declaration["revision"], filename=artifact["name"],
-                                local_dir=args.destination, force_download=force)
+                downloaded = Path(hf_hub_download(repo_id=repo, revision=revision, filename=source_name,
+                                                  local_dir=args.destination, force_download=force))
+                if downloaded.resolve() != path.resolve():
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    downloaded.replace(path)
             if not check(path, artifact):
                 raise RuntimeError(f"Artifact verification failed: {path}. Retry the model reconciliation command")
     print("OK models: exact sizes, declared SHA-256 hashes and safetensors headers")

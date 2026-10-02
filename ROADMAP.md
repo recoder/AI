@@ -2,7 +2,7 @@
 
 Use unchecked tasks (`[ ]`) for planned work and checked tasks (`[x]`) for completed work. Keep completed tasks in their original section and update this file as work lands. Check installation tasks only after validating actual state.
 
-Music generation is the first installation priority: YuE, ACE-Step, LeVo, and HeartMuLa. Define their unified job and runner interface before implementing installers. Other tool sections remain candidates from `AGENTS.md`. Detailed documentation belongs in `docs/`.
+Music generation is the first installation priority: YuE, ACE-Step, LeVo, and HeartMuLa. YuE and ACE-Step 1.5 have working native adapters; comparative ACE-Step listening and fresh-Windows validation remain open. Define each tool's unified job mapping before implementing its installer. Other tool sections remain candidates from `AGENTS.md`. Detailed documentation belongs in `docs/`.
 
 Order of work: job/runner contract → bootstrap and helper tools → shared runner implementation → music tool installation and adapters → validation and operator guides.
 
@@ -69,12 +69,49 @@ Order of work: job/runner contract → bootstrap and helper tools → shared run
 
 ## ACE-Step
 
-- [ ] Choose the upstream generation/revision and verify Windows support, Python/GPU requirements, dependencies, models, and disk usage.
-- [ ] Finalize the `ace-step` flavor and `bin/ace-step.py` adapter, including caption, lyrics, and supported tuning/negative controls.
-- [ ] Declare isolated runtime, model/cache paths, version policy, and profile membership.
-- [ ] Implement idempotent installation, resumable model acquisition, and separate updates.
-- [ ] Validate a small generation through a Markdown job; integrate status and doctor checks.
-- [ ] Document setup, supported inputs, and recovery in `docs/tools/ace-step.md`.
+Target the official ACE-Step 1.5 native-Windows stack rather than the legacy ACE-Step generation. Start with the upstream Python inference API and a conservative text-to-music scope; defer the Gradio UI, training/LoRA, cover/repaint/extract/lego/complete modes, and third-party packaged builds until the basic adapter is reproducible. Optimize defaults for output quality rather than generation speed. The initial development target is the existing RTX 5070 Ti (16 GB): test the 4B **XL SFT** DiT with the 1.7B language model as the preferred configuration using INT8 and CPU offload. Retain XL Turbo as the faster 4B alternative and 2B Turbo with the 0.6B or 1.7B language model as the lower-memory fallback. Final selection remains contingent on the compatibility spike and comparative listening tests.
+
+### 1. Pin the supported stack
+
+- [x] Run a native-Windows compatibility spike against the official `ACE-Step/ACE-Step-1.5` repository; record the tested source commit, release/API version, Python version, PyTorch/CUDA build, Triton requirement, driver, and exact install commands.
+- [ ] Compare the official 2B turbo/base/SFT and 4B XL turbo/base/SFT DiT checkpoints plus the 0.6B/1.7B/4B language models for audio quality, prompt/lyric adherence, diversity, artifacts, VRAM, RAM, generation time, download size, and license; select and justify the quality-first default and fallback pairs using repeatable prompts and seeds.
+- [x] Confirm that the selected stack works through the importable inference API without starting Gradio or a persistent service, and identify a stable upstream entry point that can be called with an argument list or narrow local shim.
+- [x] Inventory every required model artifact with immutable Hugging Face revisions, paths, byte sizes, and hashes; confirm whether gated access or credentials are required.
+- [x] Record a 16 GB VRAM preset and lower-memory recovery settings, including CPU offload/quantization behavior, batch size 1, VAE decode fallback, and any Windows-specific Triton limitations.
+- [ ] Write the decision and compatibility matrix in `docs/tools/ace-step.md` before freezing manifests or dependency locks.
+
+### 2. Finalize the job contract
+
+- [x] Map the Markdown body and `song-positive-style` deterministically to ACE-Step `caption`, and map `song-lyrics` literally to `lyrics`; define instrumental behavior without silently rewriting user input.
+- [x] Confirm and document supported version-1 fields and ranges for seed, duration, inference steps, guidance, BPM, key, time signature, vocal language, LM thinking/refinement, and output format against the pinned API.
+- [x] Decide whether `song-negative-prompt` has a real DiT conditioning mapping in the pinned API; reject it explicitly if only the language-model planner exposes a differently scoped negative prompt.
+- [x] Keep version 1 to `text2music`; reject reference-audio blocks and editing task types until separate contracts and preservation tests exist.
+- [ ] Add a tracked `examples/song-jobs/ace-step-first-song.md` plus parser/translation fixtures covering instrumental and lyric-driven jobs, malformed fields, unsupported blocks, and paths with spaces.
+
+### 3. Declare and reconcile state
+
+- [x] Add `ace-step` to `config/tools.yaml` with the pinned source revision, native runtime, exact Python version, isolated environment, model path, safe defaults, timeout, and the selected 16 GB preset.
+- [x] Add the selected model artifacts to `config/models.yaml`, stored under `models/music/ace-step` and acquired separately from the source/runtime install through the existing resumable verified-download subsystem.
+- [x] Add `ace-step` to the `music` profile only after targeted install/model/validation commands work independently; ensure reruns skip verified source, environment, and model state.
+- [x] Create `tools/ace-step/` install, state, model, validation, and planning scripts using the existing application helpers; freeze Python dependencies and preserve modified/conflicting source checkouts.
+- [ ] Define an explicit update operation that changes source/model pins and the dependency lock reviewably; normal bootstrap must never float to a newer ACE-Step release or checkpoint.
+
+### 4. Implement the runner
+
+- [x] Implement `bin/ace-step.py`, `bin/ace-step.example.yaml`, and a narrow backend entry point using the shared safe job parser/config precedence and current-directory-first config lookup established by YuE.
+- [x] Add `--validate` and `--dry-run` paths that do not import PyTorch, initialize CUDA, load models, or access the network.
+- [x] Preserve each job, effective request, selected revisions/config paths, seeds, upstream metadata, timings, stdout/stderr, and all generated audio in a unique output directory; never overwrite an existing run.
+- [x] Enforce offline inference after explicit model acquisition, a bounded timeout with process-tree cleanup, and output checks for nonempty stereo 48 kHz audio in the selected format.
+
+### 5. Validate and document
+
+- [ ] Add CPU-only regression tests for parsing, mapping, defaults/precedence, unsupported controls, malformed jobs, config lookup, path handling, command construction, and output-directory preservation.
+- [x] Extend `just status` with ACE-Step source/runtime/model/config summaries and `just doctor` with pinned-source, model hash/header, import, CUDA/BF16, and example-job checks; neither command downloads models.
+- [ ] Add an exact frozen-environment audit to `just doctor`, beyond the current import/CUDA probe and idempotent `uv sync --frozen` install.
+- [ ] Generate and inspect matched instrumental and lyric-driven clips with XL SFT, XL Turbo, and the lower-memory fallback on the RTX 5070 Ti; record elapsed time, peak VRAM where practical, audio format/rate/channels/duration, seed reproducibility, prompt/lyric adherence, audible artifacts, and comparative quality findings.
+- [x] Generate a first 30-second lyric-driven XL SFT + 1.7B LM clip on the RTX 5070 Ti (2026-10-02); confirm stereo 48 kHz IEEE-float WAV and GPU VAE decode with 9.53 GB effective free VRAM after DiT offload. Comparative listening remains separate.
+- [ ] Verify install/model/validate reruns and recovery from an interrupted model download, then complete one fresh-Windows installation before declaring ACE-Step support complete.
+- [x] Finish `docs/tools/ace-step.md` with installation, job fields, selected models, storage/disk budget, generation examples, update policy, failure recovery, deferred features, and links to the pinned official sources.
 
 ## LeVo
 

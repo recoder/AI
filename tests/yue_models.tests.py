@@ -14,6 +14,20 @@ spec.loader.exec_module(models)
 
 
 class Download(unittest.TestCase):
+    def test_per_artifact_repository_and_source_name(self):
+        declaration = {
+            "repositories": {
+                "quality": {"repo": "fixture/xl", "revision": "b" * 40},
+            }
+        }
+        self.assertEqual(
+            ("fixture/xl", "b" * 40, "weights/model.safetensors"),
+            models.artifact_source(
+                declaration,
+                {"name": "xl/model.safetensors", "source_name": "weights/model.safetensors", "repository": "quality"},
+            ),
+        )
+
     def test_range_resume_and_hash_verification(self):
         payload = bytes(range(256)) * 32
         ranges = []

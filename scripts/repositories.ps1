@@ -5,7 +5,8 @@ param([string[]]$Names, [switch]$DefinitionsOnly)
 
 function Invoke-WorkspaceGit {
     param([string[]]$Arguments)
-    $result = Invoke-WorkspaceCommand -FilePath (Get-Command git -CommandType Application).Source -Arguments $Arguments -TimeoutSeconds 600
+    $git = Get-Command git -CommandType Application | Select-Object -First 1
+    $result = Invoke-WorkspaceCommand -FilePath $git.Source -Arguments $Arguments -TimeoutSeconds 600
     if ($result.TimedOut -or $result.ExitCode -ne 0) { throw "Git failed (exit $($result.ExitCode), timeout $($result.TimedOut)): $($result.ErrorOutput). Check network/authentication and retry; local work is preserved." }
     return $result.Output.Trim()
 }

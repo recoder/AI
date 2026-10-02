@@ -1,0 +1,39 @@
+version: 1
+tool: ace-step
+backend: official-python-api
+paths:
+  application: ../apps/ace-step-1.5
+  python: ../apps/ace-step-1.5/.venv/Scripts/python.exe
+  entrypoint: ace_step_backend.py
+  models: ../models/music/ace-step
+runtime:
+  device: cuda
+  dit_model: acestep-v15-xl-sft
+  fallback_dit_model: acestep-v15-turbo
+  lm_model: acestep-5Hz-lm-1.7B
+  lm_backend: vllm
+  offload_to_cpu: true
+  offload_dit_to_cpu: true
+  quantization: int8_weight_only
+  compile_model: true
+  timeout_seconds: 3600
+defaults:
+  seed: 42
+  duration_seconds: 30
+  steps: 50
+  guidance_scale: 7.0
+  temperature: 0.85
+  top_k: 0
+  top_p: 0.9
+  tool_options:
+    thinking: true
+    shift: 1.0
+    infer_method: ode
+    output_format: wav
+identities:
+  source_revision: ca1e85fe9430179831e6bc6be790c332190a3866
+  model_revisions:
+    main: 19671f406d603126926c1b7e2adc169acbcade22
+    xl-sft: d06de46b4622f781cf07f4a013a67d591ca52819
+output:
+  directory: ../work/music/generated

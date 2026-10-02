@@ -1,5 +1,40 @@
 version: 1
 tools:
+  ace-step:
+    generation: ACE-Step 1.5
+    backend: official-python-api
+    repo: https://github.com/ACE-Step/ACE-Step-1.5.git
+    branch: main
+    revision: ca1e85fe9430179831e6bc6be790c332190a3866
+    path: apps/ace-step-1.5
+    entrypoint: acestep/inference.py
+    runtime: native
+    python: '3.11.13'
+    model_path: models/music/ace-step
+    runtime_settings:
+      device: cuda
+      dit_model: acestep-v15-xl-sft
+      fallback_dit_model: acestep-v15-turbo
+      lm_model: acestep-5Hz-lm-1.7B
+      lm_backend: vllm
+      offload_to_cpu: true
+      offload_dit_to_cpu: true
+      quantization: int8_weight_only
+      compile_model: true
+      timeout_seconds: 3600
+    defaults:
+      seed: 42
+      duration_seconds: 30
+      steps: 50
+      guidance_scale: 7.0
+      temperature: 0.85
+      top_k: 0
+      top_p: 0.9
+      tool_options:
+        thinking: true
+        shift: 1.0
+        infer_method: ode
+        output_format: wav
   yue:
     generation: YuE2
     backend: wan2gp
