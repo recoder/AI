@@ -1,5 +1,26 @@
 version: 1
 tools:
+  minimax-music3:
+    generation: MiniMax Music 3
+    backend: diffusers-modular
+    path: apps/minimax-music3
+    runtime: native
+    python: '3.11.13'
+    runtime_project: tools/minimax-music3/runtime
+    model_path: models/music/minimax-music3
+    runtime_settings:
+      device: cuda
+      dtype: bfloat16
+      component_offload: true
+      language_model_group_offload: leaf_level
+      group_offload_stream: true
+      timeout_seconds: 10800
+    defaults:
+      seed: 42
+      duration_seconds: 30
+      steps: 30
+      tool_options:
+        output_format: wav
   ace-step:
     generation: ACE-Step 1.5
     backend: official-python-api

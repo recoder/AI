@@ -7,7 +7,10 @@ function Get-ApplicationConfig {
     $manifest = (Read-WorkspaceManifest tools).tools
     if ($Tool -notmatch '^[a-z0-9][a-z0-9-]*$' -or -not $manifest.Contains($Tool)) { throw "Unknown tool '$Tool'." }
     $toolConfig = $manifest[$Tool]
-    if ($toolConfig.revision -notmatch '^[a-f0-9]{40}$') { throw "Managed tool '$Tool' must pin an exact commit." }
+    $hasRepository = $toolConfig.Contains('repo') -or $toolConfig.Contains('revision')
+    if ($hasRepository -and ([string]::IsNullOrWhiteSpace($toolConfig.repo) -or $toolConfig.revision -notmatch '^[a-f0-9]{40}$')) {
+        throw "Managed source tool '$Tool' must declare a repository and pin an exact commit."
+    }
     $workspace = Get-WorkspaceConfig
     $paths = @{}
     foreach ($field in @('path','model_path')) {
@@ -21,6 +24,7 @@ function Get-ApplicationConfig {
 
 function Initialize-ApplicationSource {
     param($Config)
+    if (-not $Config.Declaration.repo) { throw "Tool '$($Config.Name)' has no source repository; install its pinned runtime package instead." }
     $state = Get-RepositoryState $Config.Application $Config.Declaration.repo $Config.Declaration.revision
     if ($state.Ready -and -not $state.Dirty -and (Test-Path -LiteralPath (Join-Path $Config.Application $Config.Declaration.entrypoint))) { Write-Host "OK source $($Config.Name): pinned revision"; return }
     if (-not $state.Missing) {

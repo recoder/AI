@@ -12,3 +12,8 @@ if (Test-Path -LiteralPath $acePython -PathType Leaf) {
     & $acePython (Join-Path $PSScriptRoot 'ace_step.tests.py')
     if ($LASTEXITCODE -ne 0) { throw 'Music test failed: ace_step.tests.py' }
 } else { Write-Host 'SKIP ACE-Step adapter tests: run just install ace-step first.' }
+$miniMaxPython = Join-Path (Get-ApplicationConfig 'minimax-music3').Application '.venv/Scripts/python.exe'
+if (Test-Path -LiteralPath $miniMaxPython -PathType Leaf) {
+    & $miniMaxPython (Join-Path $PSScriptRoot 'minimax_music3.tests.py')
+    if ($LASTEXITCODE -ne 0) { throw 'Music test failed: minimax_music3.tests.py' }
+} else { Write-Host 'SKIP MiniMax Music 3 adapter tests: run just install minimax-music3 first.' }

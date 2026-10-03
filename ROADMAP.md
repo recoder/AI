@@ -158,14 +158,20 @@ Target the official ACE-Step 1.5 native-Windows stack rather than the legacy ACE
 - [ ] Validate imports, GPU availability, startup, and a minimal workflow; integrate status and doctor checks.
 - [ ] Document model paths, workflows, updates, and recovery in `docs/tools/comfyui.md`.
 
-## MiniMax-Music
+## MiniMax Music 3
 
-- [ ] Confirm the intended upstream project and selection; research official installation, Windows support, Python/CUDA requirements, model access, and disk usage.
-- [ ] Choose and document native Windows or WSL execution based on upstream support.
-- [ ] Declare revision, isolated environment, dependencies, profile membership, and shared model/cache paths.
-- [ ] Implement resumable installation and model acquisition with credentials kept external.
-- [ ] Validate dependencies, GPU access where required, and a small generation; integrate status and doctor checks.
-- [ ] Document operation, output preservation, updates, and recovery in `docs/tools/minimax-music.md`.
+Target the official `MiniMaxAI/MiniMax-Music3` checkpoint through Diffusers 0.40.0's modular pipeline. Prefer full BF16 quality with CPU/language-model offload on the 16 GB RTX 5070 Ti; do not select the unrelated MiniMax-M3 coding model or download duplicate native/server checkpoint files.
+
+- [x] Confirm the official model, Diffusers entry point, community license, CUDA/BF16 requirements, selected artifact sizes, and published low-VRAM path.
+- [x] Choose a native-Windows compatibility spike with an isolated, frozen Diffusers runtime; avoid a persistent SGLang service for the first adapter.
+- [x] Declare the pinned runtime, immutable model revision, 26.6 GiB Diffusers-only artifact set, and shared model/cache paths.
+- [x] Add resumable acquisition, package reconciliation, job translation, logs, and basic CUDA/import and parser validation.
+- [x] Complete a lyric-driven 10-second generation on the RTX 5070 Ti; verify stereo 44.1 kHz WAV, non-silence, duration, memory behavior, and preserved run metadata.
+- [x] Verify idempotent installer/model reruns and add MiniMax Music 3 to the music profile so `just status` and `just doctor` include it.
+- [ ] Exercise an interrupted MiniMax model transfer and confirm partial-file resume on a fresh download.
+- [ ] Listen against matched ACE-Step and YuE prompts; assess lyric fidelity, artifacts, structure, RAM/VRAM usage, and whether quality justifies the slower offload path.
+- [ ] Run a fresh-Windows reconstruction and add an explicit reviewable update procedure.
+- [x] Document operation, output preservation, update policy, license pointer, and recovery in `docs/tools/minimax-music3.md`.
 
 ## Hermes-related tooling
 

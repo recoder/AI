@@ -7,6 +7,7 @@ Keep detailed operator documentation in this directory. The root `README.md` is 
 - [Fresh-machine test guide](fresh-machine-test.md): detailed prerequisite setup, first run, repairs, rerun verification, and failure reporting.
 - [YuE integration](tools/yue.md): native Windows installation, pinned models, Markdown jobs, validation and recovery.
 - [ACE-Step 1.5 integration](tools/ace-step.md): quality-first XL SFT installation, pinned models, Markdown jobs, validation and recovery.
+- [MiniMax Music 3 integration](tools/minimax-music3.md): quality-first Diffusers runtime, shared model artifacts, Markdown jobs, and recovery.
 
 As implementation progresses, add guides for:
 

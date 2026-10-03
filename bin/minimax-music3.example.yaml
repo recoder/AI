@@ -1,0 +1,25 @@
+version: 1
+tool: minimax-music3
+backend: diffusers-modular
+paths:
+  python: ../apps/minimax-music3/.venv/Scripts/python.exe
+  entrypoint: minimax_music3_backend.py
+  models: ../models/music/minimax-music3
+runtime:
+  device: cuda
+  dtype: bfloat16
+  component_offload: true
+  language_model_group_offload: leaf_level
+  group_offload_stream: true
+  timeout_seconds: 10800
+defaults:
+  seed: 42
+  duration_seconds: 30
+  steps: 30
+  tool_options:
+    output_format: wav
+identities:
+  model_revision: fbdf52fbaaca799592917417eb05f1899f1255ec
+  diffusers_version: 0.40.0
+output:
+  directory: ../work/music/generated
