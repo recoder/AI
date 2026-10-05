@@ -64,6 +64,7 @@ Order of work: job/runner contract → bootstrap and helper tools → shared run
 - [x] Document installation, job flavor, generation, storage and recovery in `docs/tools/yue.md`.
 - [x] Complete model acquisition and verify all five artifact hashes on the development workstation.
 - [x] Validate a 30-second stereo 48 kHz clip through the native Markdown runner on RTX 5070 Ti, 16 GB (2026-09-18); record the duration-cap truncation.
+- [x] Upgrade the frozen YuE Transformers runtime past the reviewed advisories; verify imports, CUDA, full generation, and byte-identical output against the prior baseline (2026-10-05).
 - [ ] Verify the full native install on a fresh Windows machine.
 - [ ] Add an explicit update operation with compatibility validation.
 

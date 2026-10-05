@@ -1,10 +1,17 @@
 """Narrow, offline adapter to the pinned Wan2GP YuE2 pipeline."""
 import argparse
+from importlib.metadata import version as package_version
 import json
 import os
 from pathlib import Path
 import sys
 import types
+
+
+def require_secure_transformers_version(installed):
+    from packaging.version import Version
+    if Version(installed) < Version("5.10.1"):
+        raise RuntimeError(f"YuE Transformers {installed} is below the reviewed security floor 5.10.1; rerun just install yue")
 
 
 def probe(application):
@@ -18,6 +25,8 @@ def probe(application):
         sys.modules[name] = package
     import torch
     import triton
+    transformers_version = package_version("transformers")
+    require_secure_transformers_version(transformers_version)
     from mmgp import quant_router
     # The UI registers this checkpoint format globally; the standalone adapter must do so too.
     quant_router.register_handler("shared.qtypes.int8_convrot")
@@ -27,7 +36,7 @@ def probe(application):
         raise RuntimeError("CUDA/BF16 is unavailable; repair NVIDIA driver and run just install yue")
     test = torch.ones((16, 16), dtype=torch.bfloat16, device="cuda")
     assert (test @ test).float().sum().item() == 4096
-    print(f"CUDA OK: {torch.cuda.get_device_name(0)}, torch {torch.__version__}, Triton {triton.__version__}", flush=True)
+    print(f"CUDA OK: {torch.cuda.get_device_name(0)}, torch {torch.__version__}, Triton {triton.__version__}, Transformers {transformers_version}", flush=True)
     return YuE2Pipeline
 
 
