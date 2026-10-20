@@ -21,6 +21,14 @@ foreach ($entry in $workspace.Paths.GetEnumerator()) {
     else { $failures++; Write-Host "  FAIL $($entry.Key): missing directory. Repair: just directories" }
 }
 if (-not $HelpersOnly) {
+    if ('tool-service' -notin $selected.tools) {
+        $serviceDeclaration = (Read-WorkspaceManifest tools).tools['tool-service']
+        $servicePython = Join-Path (Join-Path $workspace.Root $serviceDeclaration.path) '.venv/Scripts/python.exe'
+        if (Test-Path -LiteralPath $servicePython -PathType Leaf) {
+            try { & "$PSScriptRoot/tool-service.ps1" -Operation validate }
+            catch { $failures++; Write-Host '  FAIL tool service: see diagnostics above. Repair: just validate tool-service' }
+        } else { Write-Host '  INFO optional tool service not installed. Install: just install tool-service' }
+    }
     Write-Host 'Shared caches'
     $environment = (Read-WorkspaceManifest workspace).workspace.environment
     foreach ($entry in $environment.GetEnumerator()) {

@@ -1,0 +1,3 @@
+# Copy to tool-service.keys.yaml and replace every example before starting.
+- replace-with-a-long-random-key
+- user:replace-with-a-long-random-password

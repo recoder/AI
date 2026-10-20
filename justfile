@@ -51,3 +51,9 @@ test-music:
 
 repos:
     pwsh -NoProfile -File scripts/repositories.ps1
+
+serve:
+    pwsh -NoProfile -File scripts/tool-service.ps1 -Operation serve
+
+test-service:
+    uv run --frozen --project services/tool-service --python 3.11 -m pytest services/tool-service/tests -q

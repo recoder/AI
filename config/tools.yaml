@@ -1,5 +1,10 @@
 version: 1
 tools:
+  tool-service:
+    path: apps/tool-service
+    runtime: native
+    python: '3.11.13'
+    runtime_project: services/tool-service
   minimax-music3:
     generation: MiniMax Music 3
     backend: diffusers-modular

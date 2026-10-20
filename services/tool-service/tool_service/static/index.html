@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local tools</title><link rel="stylesheet" href="/ui/style.css">
+  <script src="/ui/app.js" defer></script>
+</head>
+<body>
+  <main>
+    <header><p class="eyebrow">AI WORKSTATION</p><h1>Local tools</h1><p>Write a song job. Choose a tool. Download the result.</p></header>
+    <section class="connection" aria-label="Authentication">
+      <label for="key">Access key <span>Kept only in this tab’s memory</span></label>
+      <div class="row"><input id="key" type="password" autocomplete="off" placeholder="Key or user:password"><button id="connect">Connect</button><button id="disconnect" class="secondary" disabled>Disconnect</button></div>
+    </section>
+    <section aria-label="New job">
+      <div class="row"><label for="tool">Tool</label><select id="tool" disabled><option>Connect to load tools</option></select><button id="example" class="secondary" disabled>Load example</button></div>
+      <p id="tool-detail" class="muted"></p>
+      <label for="text">Markdown song job</label>
+      <textarea id="text" spellcheck="false" placeholder="# Song title&#10;&#10;Describe your song…"></textarea>
+      <div class="row"><button id="download" disabled>Download</button><span id="status" role="status" aria-live="polite">Connect to get started.</span></div>
+    </section>
+    <section aria-label="Recent jobs"><div class="row"><h2>Recent jobs</h2><button id="refresh" class="secondary" disabled>Refresh</button></div><p class="muted">Jobs continue when this page closes. Reconnect to retrieve results.</p><ul id="jobs"></ul><button id="more" class="secondary" hidden>Load more</button></section>
+  </main>
+</body>
+</html>

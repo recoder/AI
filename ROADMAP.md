@@ -132,6 +132,20 @@ Target the official ACE-Step 1.5 native-Windows stack rather than the legacy ACE
 - [ ] Validate a small generation through a Markdown job; integrate status and doctor checks.
 - [ ] Document setup, supported inputs, and recovery in `docs/tools/heartmula.md`.
 
+## WavePrompt
+
+- [ ] Review WavePrompt generation software: identify the official upstream project, assess capabilities and license, and verify Windows support, runtime/GPU requirements, model dependencies, and disk usage.
+- [ ] Plan and implement local installation through the existing manifests and tool helpers, with an isolated runtime, shared model/cache paths, resumable downloads, and separate updates.
+- [ ] Validate a small generation, preserve inputs and outputs, integrate status and doctor checks, and document operation and recovery in `docs/tools/waveprompt.md`.
+
+## llama.cpp and local model management
+
+- [ ] Plan a local llama.cpp installation: review official Windows/CUDA support, choose a version and binary/build approach, and identify dependencies and disk requirements.
+- [ ] Evaluate and select tools to manage local models for llama.cpp, including model discovery, GGUF compatibility/quantization selection, resumable downloads, inventory, and model switching.
+- [ ] Declare the runtime, selected management tools, initial models, profile membership, and shared storage under `models/llm/`; avoid duplicate model copies and preserve manually added models.
+- [ ] Implement idempotent installation and configuration with explicit updates; validate GPU inference, server health where applicable, and model-management operations through status and doctor checks.
+- [ ] Document installation, model management, operation, updates, and recovery in `docs/tools/llama-cpp.md`.
+
 ## Ollama
 
 - [ ] Confirm selection and research current official Windows installation, GPU requirements, disk usage, and unattended operation.

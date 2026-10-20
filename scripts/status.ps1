@@ -12,6 +12,7 @@ Write-Host "Workspace: $($workspace.Root)"
 Write-Host "Profile: $($selected.Name)"
 Write-Host "Helper packages: $(@($packages | Where-Object Usable).Count)/$($packages.Count)"
 Write-Host "Directories: $present/$($workspace.Paths.Count)"
+& "$PSScriptRoot/tool-service.ps1" -Operation status
 foreach ($tool in $selected.tools) {
     $stateScript = Join-Path $script:RepositoryRoot "tools/$tool/state.ps1"
     if (-not (Test-Path -LiteralPath $stateScript)) { Write-Host "PENDING ${tool}: state adapter missing"; continue }

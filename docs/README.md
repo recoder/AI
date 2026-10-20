@@ -3,6 +3,7 @@
 Keep detailed operator documentation in this directory. The root `README.md` is the entry point, `ROADMAP.md` tracks progress, and `AGENTS.md` contains agent instructions.
 
 - [Song-generation jobs and runners](song-generation-jobs.md): shared format, per-tool flavors, YAML configuration lookup, and execution behavior.
+- [Local tool service](tool-service.md): authenticated REST, browser UI, and MCP; persistent jobs, setup, downloads, diagnostics, and testing.
 - [Bootstrap foundation](bootstrap.md): setup, configuration, commands, validation, and recovery.
 - [Fresh-machine test guide](fresh-machine-test.md): detailed prerequisite setup, first run, repairs, rerun verification, and failure reporting.
 - [YuE integration](tools/yue.md): native Windows installation, pinned models, Markdown jobs, validation and recovery.

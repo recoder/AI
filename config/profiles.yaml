@@ -11,4 +11,7 @@ profiles:
     tools: [yue, ace-step, minimax-music3]
     models: [yue, ace-step, minimax-music3]
   full:
-    includes: [music]
+    includes: [music, service]
+  service:
+    includes: [core]
+    tools: [tool-service]
