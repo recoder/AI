@@ -134,9 +134,9 @@ Target the official ACE-Step 1.5 native-Windows stack rather than the legacy ACE
 
 ## WavePrompt
 
-- [ ] Review WavePrompt generation software: identify the official upstream project, assess capabilities and license, and verify Windows support, runtime/GPU requirements, model dependencies, and disk usage.
-- [ ] Plan and implement local installation through the existing manifests and tool helpers, with an isolated runtime, shared model/cache paths, resumable downloads, and separate updates.
-- [ ] Validate a small generation, preserve inputs and outputs, integrate status and doctor checks, and document operation and recovery in `docs/tools/waveprompt.md`.
+Moved to [optional manual installations](docs/optional-manual-installations.md) on 2026-10-20 because it uses YuE2, which is already available in this workstation. No managed bootstrap, runner, or service integration is planned.
+
+- [x] Review and locally test WavePrompt 1.2.3 on RTX 5070 Ti; verify an offline stereo 48 kHz/24-bit loop (2026-10-20). Retain the local installation and generated work as an optional manual tool.
 
 ## llama.cpp and local model management
 
